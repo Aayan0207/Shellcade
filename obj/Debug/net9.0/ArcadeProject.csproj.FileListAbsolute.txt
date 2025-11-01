@@ -1,0 +1,15 @@
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\bin\Debug\net9.0\ArcadeProject.exe
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\bin\Debug\net9.0\ArcadeProject.deps.json
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\bin\Debug\net9.0\ArcadeProject.runtimeconfig.json
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\bin\Debug\net9.0\ArcadeProject.dll
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\bin\Debug\net9.0\ArcadeProject.pdb
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\ArcadeProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\ArcadeProject.AssemblyInfoInputs.cache
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\ArcadeProject.AssemblyInfo.cs
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\ArcadeProject.csproj.CoreCompileInputs.cache
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\ArcadeProject.sourcelink.json
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\ArcadeProject.dll
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\refint\ArcadeProject.dll
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\ArcadeProject.pdb
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\ArcadeProject.genruntimeconfig.cache
+C:\Users\Aayan Khan\OneDrive\Desktop\Computer Science\ArcadeProject\obj\Debug\net9.0\ref\ArcadeProject.dll
