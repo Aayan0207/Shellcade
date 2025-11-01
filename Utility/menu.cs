@@ -4,33 +4,36 @@ namespace ArcadeProject.Utility
 {
     public static class Menu
     {
-        public static void Run()
+        public static int Run()
         {
             Console.CursorVisible = false;
-            string[] menuItems = ["Pong", "Dino Runner", "Hangman"];
-            int choice = 0;
+            string[] menuItems = ["Sudoku", "Dino Runner", "Hangman"];
+            ConsoleColor[] colors = [ConsoleColor.Blue, ConsoleColor.Yellow, ConsoleColor.Green];
+            int choice = 1;
             bool flag = false;
             while (!flag)
             {
                 Console.Clear();
+                Console.ResetColor();
                 Console.WriteLine("Welcome to the Arcade");
                 for (int item = 0; item < menuItems.Length; item++)
                 {
-                    if (item == choice)
+                    Console.ForegroundColor = colors[item];
+                    if (item == choice - 1)
                     {
                         Console.WriteLine($"◉ {menuItems[item]}");
                     }
                     else
                     {
-                        Console.WriteLine($"{menuItems[item]}");
+                        Console.WriteLine($"◎ {menuItems[item]}");
                     }
                 }
                 ConsoleKey key = Console.ReadKey(true).Key;
-                if (key == ConsoleKey.UpArrow && choice > 0)
+                if (key == ConsoleKey.UpArrow && choice > 1)
                 {
                     choice -= 1;
                 }
-                else if (key == ConsoleKey.DownArrow && choice < menuItems.Length-1)
+                else if (key == ConsoleKey.DownArrow && choice < menuItems.Length)
                 {
                     choice += 1;
                 }
@@ -39,6 +42,7 @@ namespace ArcadeProject.Utility
                     flag = true;
                 }
             }
+            return choice;
         }
     }
 }
