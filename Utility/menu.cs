@@ -6,6 +6,7 @@ namespace ArcadeProject.Utility
     {
         public static void Run()
         {
+            Console.CursorVisible = false;
             string[] menuItems = ["Pong", "Dino Runner", "Hangman"];
             int choice = 0;
             bool flag = false;
