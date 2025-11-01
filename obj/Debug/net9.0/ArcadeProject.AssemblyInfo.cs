@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ArcadeProject")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03a0ce1268c4bd5f33a18231d479941e2358159f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0c79d62797ba24db008b434f1756df526c3dc1cd")]
 [assembly: System.Reflection.AssemblyProductAttribute("ArcadeProject")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ArcadeProject")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
