@@ -16,10 +16,10 @@ namespace ArcadeProject.Games
             char[] guesses = [];
             while (!flag)
             {
-                Console.WriteLine("Welcome to  Hangman!");
-                Console.WriteLine("Try to guess the word before your chances run out!");
-                Console.WriteLine("Good luck!");
-                Console.WriteLine(word);
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine(" _   _                                         \n| | | | __ _ _ __   __ _ _ __ ___   __ _ _ __  \n| |_| |/ _` | '_ \\ / _` | '_ ` _ \\ / _` | '_ \\ \n|  _  | (_| | | | | (_| | | | | | | (_| | | | |\n|_| |_|\\__,_|_| |_|\\__, |_| |_| |_|\\__,_|_| |_|\n                   |___/                       \n");
+                Console.WriteLine("Try to guess the word before your chances run out! Good luck!");
+                Console.ResetColor();
                 for (int i = 0; i < word.Length; i++)
                 {
                     if (guesses.Contains(word[i]))

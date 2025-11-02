@@ -15,7 +15,7 @@ namespace ArcadeProject.Utility
             {
                 Console.Clear();
                 Console.ResetColor();
-                Console.WriteLine("Welcome to the Arcade");
+                Console.WriteLine("   _____ __         __________          __   \n  / ___// /_  ___  / / / ____/___ _____/ /__ \n  \\__ \\/ __ \\/ _ \\/ / / /   / __ `/ __  / _ \\\n ___/ / / / /  __/ / / /___/ /_/ / /_/ /  __/\n/____/_/ /_/\\___/_/_/\\____/\\__,_/\\__,_/\\___/ \n                                             \n");
                 for (int item = 0; item < menuItems.Length; item++)
                 {
                     Console.ForegroundColor = colors[item];
