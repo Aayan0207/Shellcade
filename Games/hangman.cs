@@ -10,16 +10,17 @@ namespace ArcadeProject.Games
             Console.Clear();
             Console.ResetColor();
             int chances = 8;
-            bool flag = false;
             string word = RandomWord();
             char[] possibles = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-            char[] guesses = [];
-            while (!flag)
+            List<char> guesses = [];
+            while (true)
             {
+                Console.Clear();
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine(" _   _                                         \n| | | | __ _ _ __   __ _ _ __ ___   __ _ _ __  \n| |_| |/ _` | '_ \\ / _` | '_ ` _ \\ / _` | '_ \\ \n|  _  | (_| | | | | (_| | | | | | | (_| | | | |\n|_| |_|\\__,_|_| |_|\\__, |_| |_| |_|\\__,_|_| |_|\n                   |___/                       \n");
                 Console.WriteLine("Try to guess the word before your chances run out! Good luck!");
                 Console.ResetColor();
+                Console.Write("\t");
                 for (int i = 0; i < word.Length; i++)
                 {
                     if (guesses.Contains(word[i]))
@@ -31,24 +32,57 @@ namespace ArcadeProject.Games
                         Console.Write("_");
                     }
                 }
-                Console.WriteLine("\n\n_____________________________________________________");
+                Console.WriteLine();
+                if (word.All(ch => guesses.Contains(ch)))
+                {
+                    Console.WriteLine("You won! Congratulations!");
+                    break;
+                }
+                if (chances <= 0)
+                {
+                    Console.WriteLine($"Sorry, you lost. The word was {word}");
+                    break;
+                }
+                Console.WriteLine($"Chances left: {chances}");
                 for (int i = 0; i < possibles.Length; i++)
                 {
                     if (guesses.Contains(possibles[i]))
                     {
-                        Console.Write("| _ ");
-                    }
-                    else if (i == 12 || i == 25)
-                    {
-                        Console.WriteLine($"| {possibles[i]} |");
+                        Console.Write(" _ ");
                     }
                     else
                     {
-                        Console.Write($"| {possibles[i]} ");
+                        Console.Write($" {possibles[i]} ");
+                    }
+                    if (i == 12)
+                    {
+                        Console.WriteLine();
                     }
                 }
-                Console.WriteLine("_____________________________________________________");
-                break; //temporary
+                Console.WriteLine("\nYour guess: ");
+                char guess = Console.ReadKey(true).KeyChar;
+                if (!char.IsLetter(guess))
+                {
+                    Console.WriteLine("Invalid input. Try a letter.");
+                    continue;
+                }
+                if (guesses.Contains(guess))
+                {
+                    Console.WriteLine("Already Guessed!");
+                }
+                else if (word.Contains(guess))
+                {
+                    Console.WriteLine("That's in the word!");
+                    guesses.Add(guess);
+                }
+                else
+                {
+                    Console.WriteLine("That's not in my word");
+                    chances -= 1;
+                    guesses.Add(guess);
+                }
+                Thread.Sleep(2000);
+
             }
         }
         public static string RandomWord()
