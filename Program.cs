@@ -8,7 +8,7 @@ try
     switch (game)
     {
         case 1:
-            Console.WriteLine("Sudoku");
+            Sudoku.Run();
             break;
         case 2:
             Console.WriteLine("Dino Runner");
@@ -22,4 +22,4 @@ finally
 {
     Cleanup.Run();
 }
-//Pong, Dino Runner, Minesweeper, Crossword, Hangman, Sudoku
+//Mastermind, Sudoku, TicTacToe, Buckshot Roulette, 2048, Pong, Dino Runner
