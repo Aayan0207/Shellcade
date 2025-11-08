@@ -11,43 +11,73 @@ namespace ArcadeProject.Games
             // Console.CursorVisible = false;
             Console.Clear();
             Console.ResetColor();
-            // Console.CursorVisible = true;
-            int[,] board = Board(1);
-            int[,] solved_board = SolvedBoard((int[,])board.Clone());
-            // Console.SetCursorPosition(0, 0);
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write("   _____           __      __       \n  / ___/__  ______/ /___  / /______ \n  \\__ \\/ / / / __  / __ \\/ //_/ __ \\\n ___/ / /_/ / /_/ / /_/ / ,< / /_/ /\n/____/\\__,_/\\__,_/\\____/_/|_|\\____/ \n                                    \n");
-            Console.ResetColor();
-            Console.WriteLine("___________________________\n");
-            for (int i = 0; i < 9; i++)
+            int mode = 1;
+            bool flag = false;
+            string[] details = ["Easy", "Medium", "Hard", "Extreme"];
+            ConsoleColor colors = [ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.DarkRed];
+            while (!flag)
             {
-                for (int j = 0; j < 9; j++)
+                for (int i = 0; i < details.Length; i++)
                 {
-                    if (board[i, j] == 0)
+                    Console.ForegroundColor = colors[i];
+                    if (mode - 1 == i)
                     {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write(" _ ");
-                        Console.ResetColor();
+                        Console.WriteLine($"◉ {details[i]}");
                     }
                     else
                     {
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.Write($" {board[i, j]} ");
-                        Console.ResetColor();
+                        Console.WriteLine($"◎ {details[i]}");
                     }
+                    Console.ResetColor();
+                }
+                ConsoleKey key = Console.ReadKey(true).key;
+                if (key == ConsoleKey.UpArrow && mode > 1)
+                {
+                    
+                }
+            }
+            do
+            {
+                Console.Clear();
+                Console.ResetColor();
+                // Console.CursorVisible = true;
+                int[,] board = Board(1);
+                int[,] solved_board = SolvedBoard((int[,])board.Clone());
+                // Console.SetCursorPosition(0, 0);
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("   _____           __      __        \n  / ___/__  ______/ /___  / /____  __\n  \\__ \\/ / / / __  / __ \\/ //_/ / / /\n ___/ / /_/ / /_/ / /_/ / ,< / /_/ / \n/____/\\__,_/\\__,_/\\____/_/|_|\\__,_/  \n                                     \n");
+                Console.ResetColor();
+                Console.WriteLine("___________________________\n");
+                for (int i = 0; i < 9; i++)
+                {
+                    for (int j = 0; j < 9; j++)
+                    {
+                        if (board[i, j] == 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write(" _ ");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write($" {board[i, j]} ");
+                            Console.ResetColor();
+                        }
+                    }
+                    Console.WriteLine();
                 }
                 Console.WriteLine();
-            }
-            Console.WriteLine();
-            Console.WriteLine("___________________________");
-            // for (int i = 0; i < 9; i++)
-            // {
-            //     for (int j = 0; j < 9; j++)
-            //     {
-            //         Console.Write($" {solved_board[i, j]} ");
-            //     }
-            //     Console.WriteLine();
-            // }
+                Console.WriteLine("___________________________");
+                // for (int i = 0; i < 9; i++)
+                // {
+                //     for (int j = 0; j < 9; j++)
+                //     {
+                //         Console.Write($" {solved_board[i, j]} ");
+                //     }
+                //     Console.WriteLine();
+                // }
+            } while (board != solved_board);
         }
         public static int[,] Board(int mode)
         {
