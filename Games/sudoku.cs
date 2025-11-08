@@ -9,31 +9,48 @@ namespace ArcadeProject.Games
         public static void Run()
         {
             // Console.CursorVisible = false;
+            const string BOLD = "\x1b[1m";
+            const string RESET = "\x1b[0m";
             Console.Clear();
             Console.ResetColor();
             int mode = 1;
             bool flag = false;
             string[] details = ["Easy", "Medium", "Hard", "Extreme"];
-            ConsoleColor colors = [ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.DarkRed];
+            ConsoleColor[] colors = [ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.DarkMagenta];
+            int[,] board, solved_board;
             while (!flag)
             {
+                Console.Clear();
+                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("   _____           __      __        \n  / ___/__  ______/ /___  / /____  __\n  \\__ \\/ / / / __  / __ \\/ //_/ / / /\n ___/ / /_/ / /_/ / /_/ / ,< / /_/ / \n/____/\\__,_/\\__,_/\\____/_/|_|\\__,_/  \n                                     \n");
+                Console.ResetColor();
+                Console.WriteLine("Test");
                 for (int i = 0; i < details.Length; i++)
                 {
                     Console.ForegroundColor = colors[i];
                     if (mode - 1 == i)
                     {
-                        Console.WriteLine($"◉ {details[i]}");
+                        Console.WriteLine($"◉{BOLD} {details[i]}{RESET}");
                     }
                     else
                     {
-                        Console.WriteLine($"◎ {details[i]}");
+                        Console.WriteLine($"◎{BOLD} {details[i]}{RESET}");
                     }
                     Console.ResetColor();
                 }
-                ConsoleKey key = Console.ReadKey(true).key;
+                ConsoleKey key = Console.ReadKey(true).Key;
                 if (key == ConsoleKey.UpArrow && mode > 1)
                 {
-                    
+                    mode -= 1;
+                }
+                else if (key == ConsoleKey.DownArrow && mode < 4)
+                {
+                    mode += 1;
+                }
+                else if (key == ConsoleKey.Enter)
+                {
+                    flag = true;
                 }
             }
             do
@@ -41,8 +58,8 @@ namespace ArcadeProject.Games
                 Console.Clear();
                 Console.ResetColor();
                 // Console.CursorVisible = true;
-                int[,] board = Board(1);
-                int[,] solved_board = SolvedBoard((int[,])board.Clone());
+                board = Board(mode);
+                solved_board = SolvedBoard((int[,])board.Clone());
                 // Console.SetCursorPosition(0, 0);
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write("   _____           __      __        \n  / ___/__  ______/ /___  / /____  __\n  \\__ \\/ / / / __  / __ \\/ //_/ / / /\n ___/ / /_/ / /_/ / /_/ / ,< / /_/ / \n/____/\\__,_/\\__,_/\\____/_/|_|\\__,_/  \n                                     \n");
@@ -60,7 +77,7 @@ namespace ArcadeProject.Games
                         }
                         else
                         {
-                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.ForegroundColor = ConsoleColor.Cyan;
                             Console.Write($" {board[i, j]} ");
                             Console.ResetColor();
                         }
@@ -77,6 +94,7 @@ namespace ArcadeProject.Games
                 //     }
                 //     Console.WriteLine();
                 // }
+                break; //temporary
             } while (board != solved_board);
         }
         public static int[,] Board(int mode)
