@@ -9,6 +9,7 @@ namespace ArcadeProject.Games
         {
             Console.Clear();
             Console.ResetColor();
+            Console.WriteLine("\n\n\n\n\n");
             int chances = 8;
             string word = RandomWord();
             char[] possibles = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
@@ -59,8 +60,9 @@ namespace ArcadeProject.Games
                         Console.WriteLine();
                     }
                 }
-                Console.WriteLine("\nYour guess: ");
-                char guess = Console.ReadKey(true).KeyChar;
+                Console.WriteLine("\nInput your guess...");
+                char guess = Char.ToLower(Console.ReadKey(true).KeyChar);
+                Console.WriteLine($"You guessed: {guess}");
                 if (!char.IsLetter(guess))
                 {
                     Console.WriteLine("Invalid input. Try a letter.");
