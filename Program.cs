@@ -11,7 +11,7 @@ try
             Sudoku.Run();
             break;
         case 2:
-            Console.WriteLine("Dino Runner");
+            Nim.Run();
             break;
         case 3:
             Hangman.Run();
@@ -22,4 +22,3 @@ finally
 {
     Cleanup.Run();
 }
-//Mastermind, Sudoku, TicTacToe, Buckshot Roulette, 2048, Pong, Dino Runner
