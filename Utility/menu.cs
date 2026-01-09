@@ -7,8 +7,8 @@ namespace ArcadeProject.Utility
         public static int Run()
         {
             Console.CursorVisible = false;
-            string[] menuItems = ["Sudoku", "Nim", "Hangman"];
-            ConsoleColor[] colors = [ConsoleColor.Blue, ConsoleColor.Yellow, ConsoleColor.Green];
+            string[] menuItems = ["Sudoku", "Nim", "Hangman", "TicTacToe", "Minesweeper", "Mastermind", "Buckshot Roulette"];
+            ConsoleColor[] colors = [ConsoleColor.Blue, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.Cyan, ConsoleColor.DarkGreen, ConsoleColor.Red, ConsoleColor.Magenta];
             int choice = 1;
             bool flag = false;
             while (!flag)

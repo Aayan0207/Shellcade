@@ -13,11 +13,10 @@ namespace ArcadeProject.Games
             Console.Clear();
             Console.ResetColor();
             int mode = 1;
-            bool flag = false;
             string[] details = ["Easy", "Medium", "Hard", "Extreme"];
             ConsoleColor[] colors = [ConsoleColor.Green, ConsoleColor.Yellow, ConsoleColor.Red, ConsoleColor.DarkMagenta];
             int[,] board, solved_board;
-            while (!flag)
+            while (true)
             {
                 Console.Clear();
                 Console.ResetColor();
@@ -49,7 +48,7 @@ namespace ArcadeProject.Games
                 }
                 else if (key == ConsoleKey.Enter)
                 {
-                    flag = true;
+                    break;
                 }
             }
             Console.CursorVisible = true;
