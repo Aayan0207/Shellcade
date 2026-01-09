@@ -8,7 +8,6 @@ namespace ArcadeProject.Games
     {
         public static void Run()
         {
-            // Console.CursorVisible = false;
             const string BOLD = "\x1b[1m";
             const string RESET = "\x1b[0m";
             Console.Clear();
@@ -25,7 +24,7 @@ namespace ArcadeProject.Games
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write("   _____           __      __        \n  / ___/__  ______/ /___  / /____  __\n  \\__ \\/ / / / __  / __ \\/ //_/ / / /\n ___/ / /_/ / /_/ / /_/ / ,< / /_/ / \n/____/\\__,_/\\__,_/\\____/_/|_|\\__,_/  \n                                     \n");
                 Console.ResetColor();
-                Console.WriteLine("Test");
+                Console.WriteLine("Select Difficulty");
                 for (int i = 0; i < details.Length; i++)
                 {
                     Console.ForegroundColor = colors[i];
@@ -53,14 +52,14 @@ namespace ArcadeProject.Games
                     flag = true;
                 }
             }
-            do
+            Console.CursorVisible = true;
+            board = Board(mode);
+            int[,] base_board = (int[,])board.Clone();
+            solved_board = SolvedBoard((int[,])board.Clone());
+            while (true)
             {
                 Console.Clear();
                 Console.ResetColor();
-                // Console.CursorVisible = true;
-                board = Board(mode);
-                solved_board = SolvedBoard((int[,])board.Clone());
-                // Console.SetCursorPosition(0, 0);
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.Write("   _____           __      __        \n  / ___/__  ______/ /___  / /____  __\n  \\__ \\/ / / / __  / __ \\/ //_/ / / /\n ___/ / /_/ / /_/ / /_/ / ,< / /_/ / \n/____/\\__,_/\\__,_/\\____/_/|_|\\__,_/  \n                                     \n");
                 Console.ResetColor();
@@ -75,9 +74,15 @@ namespace ArcadeProject.Games
                             Console.Write(" _ ");
                             Console.ResetColor();
                         }
-                        else
+                        else if (base_board[i, j] != 0)
                         {
                             Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.Write($" {board[i, j]} ");
+                            Console.ResetColor();
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
                             Console.Write($" {board[i, j]} ");
                             Console.ResetColor();
                         }
@@ -86,16 +91,38 @@ namespace ArcadeProject.Games
                 }
                 Console.WriteLine();
                 Console.WriteLine("___________________________");
-                // for (int i = 0; i < 9; i++)
-                // {
-                //     for (int j = 0; j < 9; j++)
-                //     {
-                //         Console.Write($" {solved_board[i, j]} ");
-                //     }
-                //     Console.WriteLine();
-                // }
-                break; //temporary
-            } while (board != solved_board);
+                if (Compare(board, solved_board))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Congratulations! You solved the Sudoku!");
+                    Console.ResetColor();
+                    break;
+                }
+                Console.Write("Enter row: ");
+                int row = int.Parse(Console.ReadLine());
+                Console.Write("Enter column: ");
+                int column = int.Parse(Console.ReadLine());
+                if (column > 9 || row > 9 || row < 1 || column < 1 || base_board[row - 1, column - 1] != 0)
+                {
+                    continue;
+                }
+                Console.Write("Enter guess: ");
+                int guess = int.Parse(Console.ReadLine());
+                if (guess < 1 || guess > 9)
+                {
+                    continue;
+                }
+                board[row - 1, column - 1] = guess;
+                // // for (int i = 0; i < 9; i++)
+                // // {
+                // //     for (int j = 0; j < 9; j++)
+                // //     {
+                // //         Console.Write($" {solved_board[i, j]} ");
+                // //     }
+                // //     Console.WriteLine();
+                // // }
+                // break; //temporary
+            }
         }
         public static int[,] Board(int mode)
         {
@@ -109,7 +136,7 @@ namespace ArcadeProject.Games
             switch (mode)
             {
                 case 1:
-                    removed = 45;
+                    removed = 1;
                     break;
                 case 2:
                     removed = 49;
@@ -171,7 +198,20 @@ namespace ArcadeProject.Games
             }
             return unknowns;
         }
-
+        public static bool Compare(int[,] board, int[,] solved)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (board[i, j] != solved[i, j])
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
         public static List<int> Possibles(int[,] board, int x, int y)
         {
             HashSet<int> possibles = [1, 2, 3, 4, 5, 6, 7, 8, 9];
