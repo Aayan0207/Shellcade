@@ -113,15 +113,6 @@ namespace ArcadeProject.Games
                     continue;
                 }
                 board[row - 1, column - 1] = guess;
-                // // for (int i = 0; i < 9; i++)
-                // // {
-                // //     for (int j = 0; j < 9; j++)
-                // //     {
-                // //         Console.Write($" {solved_board[i, j]} ");
-                // //     }
-                // //     Console.WriteLine();
-                // // }
-                // break; //temporary
             }
         }
         public static int[,] Board(int mode)
