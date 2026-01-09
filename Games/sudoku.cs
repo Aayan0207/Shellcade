@@ -136,7 +136,7 @@ namespace ArcadeProject.Games
             switch (mode)
             {
                 case 1:
-                    removed = 1;
+                    removed = 45;
                     break;
                 case 2:
                     removed = 49;
