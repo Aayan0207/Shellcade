@@ -16,6 +16,9 @@ try
         case 3:
             Hangman.Run();
             break;
+        case 4:
+            Mastermind.Run();
+            break;
     }
 }
 finally
