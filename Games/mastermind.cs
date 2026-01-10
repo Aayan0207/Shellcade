@@ -154,13 +154,17 @@ namespace ArcadeProject.Games
                 }
                 if (guesses[tries - 1].ToUpper() == board_string.ToUpper())
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Congratulations! You Won!");
+                    Console.ResetColor();
                     break;
                 }
             }
             if (tries >= 10)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Sorry, you lost. The pattern was: ");
+                Console.ResetColor();
                 foreach (ConsoleColor color in board_colors)
                 {
                     Console.ForegroundColor = color;
