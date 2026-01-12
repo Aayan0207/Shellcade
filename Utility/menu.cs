@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 
 namespace ArcadeProject.Utility
 {
@@ -7,8 +8,8 @@ namespace ArcadeProject.Utility
         public static int Run()
         {
             Console.CursorVisible = false;
-            string[] menuItems = ["Sudoku", "Nim", "Hangman", "Mastermind", "TicTacToe", "Minesweeper", "Buckshot Roulette"];
-            ConsoleColor[] colors = [ConsoleColor.Blue, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.Cyan, ConsoleColor.DarkGreen, ConsoleColor.Red, ConsoleColor.Magenta];
+            string[] menuItems = ["Sudoku", "Nim", "Hangman", "Mastermind", "Tiles", "TicTacToe", "Minesweeper", "Buckshot Roulette"];
+            ConsoleColor[] colors = [ConsoleColor.Blue, ConsoleColor.Yellow, ConsoleColor.Green, ConsoleColor.Cyan, ConsoleColor.Red, ConsoleColor.Black, ConsoleColor.Magenta, ConsoleColor.Gray];
             int choice = 1;
             bool flag = false;
             while (!flag)

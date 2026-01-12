@@ -19,6 +19,9 @@ try
         case 4:
             Mastermind.Run();
             break;
+        case 5:
+            Tiles.Run();
+            break;
     }
 }
 finally
