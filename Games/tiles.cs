@@ -20,6 +20,12 @@ namespace ArcadeProject.Games
                 Console.WriteLine("  _______ __         \n /_  __(_) /__  _____\n  / / / / / _ \\/ ___/\n / / / / /  __(__  ) \n/_/ /_/_/\\___/____/  \n                     \n");
                 Console.ResetColor();
                 Display(board);
+                if (Has_Won(board))
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Congratulations! You Won! You may continue playing...");
+                    Console.ResetColor();
+                }
                 int[,] copy = Copy(board);
                 Console.WriteLine("Enter your next move (Arrow Keys)..");
                 ConsoleKey key = Console.ReadKey(true).Key;
@@ -45,8 +51,21 @@ namespace ArcadeProject.Games
                     Random_Tile(board);
                 }
             }
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("  _______ __         \n /_  __(_) /__  _____\n  / / / / / _ \\/ ___/\n / / / / /  __(__  ) \n/_/ /_/_/\\___/____/  \n                     \n");
+            Console.ResetColor();
+            Display(board);
         }
+        public static bool Has_Won(int[,] board)
+        {
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
+                    if (board[i, j] == 2048)
+                        return true;
 
+            return false;
+        }
         public static bool Boards_Equals(int[,] board, int[,] copy)
         {
             for (int i = 0; i < 4; i++)
@@ -104,10 +123,10 @@ namespace ArcadeProject.Games
                     switch (board[i, j])
                     {
                         case 0:
-                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.ForegroundColor = ConsoleColor.White;
                             break;
                         case 2:
-                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ForegroundColor = ConsoleColor.Black;
                             break;
                         case 4:
                             Console.ForegroundColor = ConsoleColor.Blue;
@@ -128,10 +147,10 @@ namespace ArcadeProject.Games
                             Console.ForegroundColor = ConsoleColor.Cyan;
                             break;
                         case 256:
-                            Console.ForegroundColor = ConsoleColor.DarkBlue;
+                            Console.ForegroundColor = ConsoleColor.DarkGreen;
                             break;
                         case 512:
-                            Console.ForegroundColor = ConsoleColor.DarkGreen;
+                            Console.ForegroundColor = ConsoleColor.DarkBlue;
                             break;
                         case 1024:
                             Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -260,11 +279,6 @@ namespace ArcadeProject.Games
                     if (i < 3 && board[i, j] == board[i + 1, j])
                     {
                         return false;
-                    }
-                    if (board[i, j] == 2048)
-                    {
-                        Console.WriteLine("You win!");
-                        return true;
                     }
                 }
             }

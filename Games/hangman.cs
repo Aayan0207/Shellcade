@@ -36,12 +36,16 @@ namespace ArcadeProject.Games
                 Console.WriteLine();
                 if (word.All(ch => guesses.Contains(ch)))
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("You won! Congratulations!");
+                    Console.ResetColor();
                     break;
                 }
                 if (chances <= 0)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Sorry, you lost. The word was {word}");
+                    Console.ResetColor();
                     break;
                 }
                 Console.WriteLine($"Chances left: {chances}");
@@ -70,19 +74,23 @@ namespace ArcadeProject.Games
                 }
                 if (guesses.Contains(guess))
                 {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("Already Guessed!");
                 }
                 else if (word.Contains(guess))
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("That's in the word!");
                     guesses.Add(guess);
                 }
                 else
                 {
-                    Console.WriteLine("That's not in my word");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("That's not in my word.");
                     chances -= 1;
                     guesses.Add(guess);
                 }
+                Console.ResetColor();
                 Thread.Sleep(2000);
 
             }
