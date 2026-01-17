@@ -22,6 +22,9 @@ try
         case 5:
             Tiles.Run();
             break;
+        case 6:
+            TicTacToe.Run();
+            break;
     }
 }
 finally

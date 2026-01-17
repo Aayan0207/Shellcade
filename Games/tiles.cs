@@ -160,7 +160,6 @@ namespace ArcadeProject.Games
                             break;
 
                     }
-                    //White -> 2, Blue -> 4, Green -> 8, Yellow -> 16, Red -> 32, Magenta -> 64, Cyan -> 128, Grey -> 256, DarkBlue -> 512, DarkGreen -> 1024, DarkGrey -> 2048
                     Console.Write($"{tile} ");
                     Console.ResetColor();
                 }
