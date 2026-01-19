@@ -25,6 +25,9 @@ try
         case 6:
             TicTacToe.Run();
             break;
+        case 7:
+            Minesweeper.Run();
+            break;
     }
 }
 finally
