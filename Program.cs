@@ -28,6 +28,9 @@ try
         case 7:
             Minesweeper.Run();
             break;
+        case 8:
+            BuckshotRoulette.Run();
+            break;
     }
 }
 finally
