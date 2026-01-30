@@ -1,11 +1,11 @@
 using System;
 
-//Item usage, firing, ai turn
+//Item usage, ai turn
 namespace ArcadeProject.Games
 {
     public class BuckshotRoulette
     {
-        Item[] ITEMS = [
+        public static Item[] ITEMS = [
             new Item("Magnifying Glass", "See current shell", 40, 2),
             new Item("Drumstick", "+1 HP", 40, 2),
             new Item("Extractor", "Remove current shell", 25, 1),
@@ -16,20 +16,21 @@ namespace ArcadeProject.Games
             new Item("Potion", "50% -1 HP/ 50% +2 HP", 2, 1),
             new Item("NULL", "NULL", 0, 3),
         ];
-        bool CAGED = false;
-        const int SHELLS = 6;
-        const int HEALTH = 5;
-        int TURN;
-        const int MAX_ITEMS = 3;
-        int ROUND;
-        int[] SHELLS;
+        public static bool CAGED = false;
+        public static bool DOUBLE_DMG = false;
+        public const int SHELL_COUNT = 6;
+        public const int HEALTH = 5;
+        public static int TURN;
+        public const int MAX_ITEMS = 3;
+        public static int ROUND;
+        public static int[] SHELLS;
         public static void Run()
         {
             Console.Clear();
             Console.ResetColor();
-            SHELLS = Queue();
-            Player player = Player(HEALTH, []);
-            Player ai = Player(HEALTH, []);
+            Queue();
+            Player player = new Player(HEALTH, []);
+            Player ai = new Player(HEALTH, []);
             TURN = Random.Shared.NextDouble() < 0.5 ? 1 : 0; //1 -> Player, 0 -> AI
             ROUND = 1;
             player.Inventory = [ITEMS[^1], ITEMS[^1], ITEMS[^1]];
@@ -39,15 +40,15 @@ namespace ArcadeProject.Games
                 Console.Clear();
                 Console.ResetColor();
                 Console.WriteLine("    ____             __        __          __  ____              __     __  __ \n   / __ )__  _______/ /_______/ /_  ____  / /_/ __ \\____  __  __/ /__  / /_/ /_\n  / __  / / / / ___/ //_/ ___/ __ \\/ __ \\/ __/ /_/ / __ \\/ / / / / _ \\/ __/ __/\n / /_/ / /_/ / /__/ ,< (__  ) / / / /_/ / /_/ _, _/ /_/ / /_/ / /  __/ /_/ /_  \n/_____/\\__,_/\\___/_/|_/____/_/ /_/\\____/\\__/_/ |_|\\____/\\__,_/_/\\___/\\__/\\__/  \n                                                                               \n      \n  ___ \n / _ \\\n/  __/\n\\___/ \n      \n");
-                Display(player, ai, SHELLS);
+                Display(player, ai);
                 if (SHELLS.Length == 0)
                 {
                     ROUND++;
                     Items(player);
                     Items(ai);
-                    SHELLS = Queue();
+                    Queue();
                 }
-                if (turn == 1)
+                if (TURN == 1)
                 {
                     Console.WriteLine("Inventory (Z) or Fire (X)");
                     Console.Write("Enter action: ");
@@ -61,7 +62,7 @@ namespace ArcadeProject.Games
                         case 'Z':
                             Console.Clear();
                             Console.ResetColor();
-                            Display(player, ai, SHELLS, true);
+                            Display(player, ai, true);
                             break;
                         case 'X':
                             Console.Write("Fire at yourself (Z) or fire at opponent (X): ");
@@ -85,7 +86,74 @@ namespace ArcadeProject.Games
 
         public static void Fire(Player player, Player ai, int shell, bool own)
         {
-            
+            Display(player, ai, false, true, shell);
+            if (TURN == 1)
+            {
+                if (shell == 1)
+                {
+                    if (DOUBLE_DMG)
+                    {
+                        if (own)
+                        {
+                            player.Health -= 2;
+                        }
+                        else
+                        {
+                            ai.Health -= 2;
+                        }
+                        DOUBLE_DMG = false;
+                    }
+                    else
+                    {
+                        if (own)
+                        {
+                            player.Health -= 1;
+                        }
+                        else
+                        {
+                            ai.Health -= 1;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (shell == 1)
+                {
+                    if (DOUBLE_DMG)
+                    {
+                        if (own)
+                        {
+                            ai.Health -= 2;
+                        }
+                        else
+                        {
+                            player.Health -= 2;
+                        }
+                        DOUBLE_DMG = false;
+                    }
+                    else
+                    {
+                        if (own)
+                        {
+                            ai.Health -= 1;
+                        }
+                        else
+                        {
+                            player.Health -= 1;
+                        }
+                    }
+                }
+            }
+            if (CAGED)
+            {
+                CAGED = false;
+            }
+            else
+            {
+                TURN = ~TURN;
+            }
+
         }
         public static void UseItem(Item item, Player player, Player ai)
         {
@@ -95,10 +163,17 @@ namespace ArcadeProject.Games
                     Console.WriteLine($"Current shell: {(SHELLS[0] == 1 ? "Live" : "Blank")}");
                     break;
                 case "drumstick":
-                    TURN == 1 ? player.Health = (player.Health + 1) % 5 : ai.Health = (ai.Health + 1) % 5;
+                    if (TURN == 1)
+                    {
+                        player.Health = (player.Health + 1) % 5;
+                    }
+                    else
+                    {
+                        ai.Health = (ai.Health + 1) % 5;
+                    }
                     break;
                 case "extractor":
-                    SHELLS[0] = -1;
+                    SHELLS = SHELLS[1..];
                     break;
                 case "cage":
                     CAGED = true; //Work
@@ -122,7 +197,7 @@ namespace ArcadeProject.Games
                             int counter = 1;
                             for (int i = 0; i < MAX_ITEMS; i++)
                             {
-                                if (ai.Inventory[i].Name == Items[^1].Name)
+                                if (ai.Inventory[i].Name == ITEMS[^1].Name)
                                 {
                                     continue;
                                 }
@@ -150,11 +225,18 @@ namespace ArcadeProject.Games
                     }
                     break;
                 case "potion":
-                    TURN == 1 ? (player.Health = Random.Shared.NextDouble() > 0.5 ? (player.Health + 1) % 5 : 0) : ai.Health = Random.Shared.NextDouble() > 0.5 ? (ai.Health + 1) % 5 : 0;
+                    if (TURN == 1)
+                    {
+                        player.Health = Random.Shared.NextDouble() > 0.5 ? (player.Health + 1) % 5 : 0;
+                    }
+                    else
+                    {
+                        ai.Health = Random.Shared.NextDouble() > 0.5 ? (ai.Health + 1) % 5 : 0;
+                    }
                     break;
             }
         }
-        public static void Display(Player player, Player ai, Item[] SHELLS, bool inventory)
+        public static void Display(Player player, Player ai, bool inventory = false, bool firing = false, int shell = -1)
         {
             if (inventory)
             {
@@ -202,26 +284,25 @@ namespace ArcadeProject.Games
                     }
                     else
                     {
-                        return AddItem(inventory);
+                        AddItem(player);
                     }
                 }
             }
 
         }
-        public static int[] Queue()
+        public static void Queue()
         {
-            int[] SHELLS = new int[SHELLS];
+
             int live = Random.Shared.Next(2, 4);
             for (int i = 0; i < live; i++)
             {
                 SHELLS[i] = 1;
             }
-            for (int i = live; i < SHELLS; i++)
+            for (int i = live; i < SHELL_COUNT; i++)
             {
                 SHELLS[i] = 0;
             }
             Random.Shared.Shuffle(SHELLS);
-            return SHELLS;
         }
     }
 
@@ -259,7 +340,7 @@ namespace ArcadeProject.Games
             int count = 0;
             foreach (Item i in Inventory)
             {
-                if (i.Name == item)
+                if (i.Name == item.Name)
                 {
                     count++;
                 }
