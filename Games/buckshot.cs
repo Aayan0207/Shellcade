@@ -1,6 +1,6 @@
 using System;
 
-//Item usage, ai turn
+//ai turn, display
 namespace ArcadeProject.Games
 {
     public class BuckshotRoulette
@@ -165,21 +165,21 @@ namespace ArcadeProject.Games
                 case "drumstick":
                     if (TURN == 1)
                     {
-                        player.Health = (player.Health + 1) % 5;
+                        player.Health = Math.Min(player.Health + 1, HEALTH);
                     }
                     else
                     {
-                        ai.Health = (ai.Health + 1) % 5;
+                        ai.Health = Math.Min(ai.Health + 1, HEALTH);
                     }
                     break;
                 case "extractor":
                     SHELLS = SHELLS[1..];
                     break;
                 case "cage":
-                    CAGED = true; //Work
+                    CAGED = true;
                     break;
                 case "exploding barrel":
-                    DOUBLE_DMG = true; //Work
+                    DOUBLE_DMG = true;
                     break;
                 case "convertor":
                     SHELLS[0] = ~SHELLS[0];
@@ -187,7 +187,7 @@ namespace ArcadeProject.Games
                 case "balaclava":
                     if (TURN == 1)
                     {
-                        if (player.ItemCount(ITEMS[^1]) == 0 || ai.ItemCount(ITEMS[^1]) == 3)
+                        if (player.ItemCount(ITEMS[^1]) == 0 || ai.ItemCount(ITEMS[^1]) == MAX_ITEMS)
                         {
                             return;
                         }
@@ -227,11 +227,11 @@ namespace ArcadeProject.Games
                 case "potion":
                     if (TURN == 1)
                     {
-                        player.Health = Random.Shared.NextDouble() > 0.5 ? (player.Health + 1) % 5 : 0;
+                        player.Health = Random.Shared.NextDouble() > 0.5 ? Math.Min(player.Health + 1, HEALTH) : 0;
                     }
                     else
                     {
-                        ai.Health = Random.Shared.NextDouble() > 0.5 ? (ai.Health + 1) % 5 : 0;
+                        ai.Health = Random.Shared.NextDouble() > 0.5 ? Math.Min(ai.Health + 1, HEALTH) : 0;
                     }
                     break;
             }
