@@ -23,7 +23,7 @@ namespace ArcadeProject.Games
         public static int TURN;
         public const int MAX_ITEMS = 3;
         public static int ROUND;
-        public static int[] SHELLS;
+        public static int[] SHELLS = new int[SHELL_COUNT];
         public static void Run()
         {
             Console.Clear();
@@ -216,7 +216,7 @@ namespace ArcadeProject.Games
                                 return;
                             }
                             Item popped = ai.PopItem(num - 1);
-                            player.AddItem(popped);
+                            player.InventoryAdd(popped);
                         }
                     }
                     else
@@ -280,7 +280,7 @@ namespace ArcadeProject.Games
                 {
                     if (player.Allowed(item))
                     {
-                        player.AddItem(item);
+                        player.InventoryAdd(item);
                     }
                     else
                     {
@@ -335,6 +335,38 @@ namespace ArcadeProject.Games
             Inventory = inventory;
         }
 
+        public bool Allowed(Item item)
+        {
+            return !(ItemCount(item) == item.Max);
+        }
+        public Item PopItem(int id)
+        {
+            for (int i = 0; i < BuckshotRoulette.MAX_ITEMS; i++)
+            {
+                if (i == id)
+                {
+                    Item popped = Inventory[i];
+                    Inventory[i] = BuckshotRoulette.ITEMS[^1];
+                    return popped;
+                }
+            }
+            return BuckshotRoulette.ITEMS[^1];
+        }
+        public void InventoryAdd(Item item)
+        {
+            if (ItemCount(item) == item.Max)
+            {
+                return;
+            }
+            for (int i = 0; i < BuckshotRoulette.MAX_ITEMS; i++)
+            {
+                if (Inventory[i].Name == BuckshotRoulette.ITEMS[^1].Name)
+                {
+                    Inventory[i] = item;
+                    break;
+                }
+            }
+        }
         public int ItemCount(Item item)
         {
             int count = 0;
