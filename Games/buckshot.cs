@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-//display
+//firing animation
 namespace ArcadeProject.Games
 {
     public class BuckshotRoulette
@@ -66,7 +66,7 @@ namespace ArcadeProject.Games
                             Display(player, ai, true);
                             break;
                         case 'X':
-                            Console.Write("\nFire at yourself (Z) or fire at opponent (X): ");
+                            Console.Write("\nFire at yourself (Z) or Fire at opponent (X): ");
                             key = char.ToUpper(Console.ReadKey().KeyChar);
                             if (key != 'Z' && key != 'X')
                             {
@@ -109,7 +109,7 @@ namespace ArcadeProject.Games
                             priority = -1; //Survive
                         }
                     }
-                    if (ai.ItemCount(ITEMS[0]) > 0 && LiveProbability >= 0.33 && CURRENT == -1) //Magnifying Glass
+                    if (ai.ItemCount(ITEMS[0]) > 0 && LiveProbability >= 0.5 && CURRENT == -1) //Magnifying Glass
                     {
                         UseItem(ITEMS[0], player, ai);
                     }
@@ -245,10 +245,34 @@ namespace ArcadeProject.Games
         }
         public static void UseItem(Item item, Player player, Player ai)
         {
+            int id = 0;
+            if (TURN == 1)
+            {
+                for (int i = 0; i < MAX_ITEMS; i++)
+                {
+                    if (player.Inventory[i].Name == item.Name)
+                    {
+                        id = i;
+                        break;
+                    }
+                }
+                player.PopItem(id);
+            }
+            else
+            {
+                for (int i = 0; i < MAX_ITEMS; i++)
+                {
+                    if (ai.Inventory[i].Name == item.Name)
+                    {
+                        id = i;
+                        break;
+                    }
+                }
+                ai.PopItem(id);
+            }
             switch (item.Name.ToLower())
             {
                 case "magnifying glass":
-                    Console.WriteLine($"Current shell: {(SHELLS[0] == 1 ? "Live" : "Blank")}");
                     CURRENT = SHELLS[0] == 1 ? 1 : 0;
                     break;
                 case "drumstick":
@@ -453,17 +477,69 @@ namespace ArcadeProject.Games
             Console.WriteLine("       |");
             Console.WriteLine("__________________________");
             Console.WriteLine($"Current shells: 💥 {SHELLS.Count(x => x == 1)} 💨 {SHELLS.Count(x => x == 0)}");
+            if (TURN == 1 && CURRENT != -1)
+            {
+                Console.WriteLine($"Current shell: {(CURRENT == 1 ? "💥" : "💨")}");
+            }
             if (inventory)
             {
-
+                bool[] allowed = [false, false, false];
+                for (int i = 0; i < MAX_ITEMS; i++)
+                {
+                    if (player.Inventory[i].Name == ITEMS[^1].Name)
+                    {
+                        continue;
+                    }
+                    allowed[i] = true;
+                    Console.Write($"{i + 1}. ");
+                    switch (player.Inventory[i].Name.ToLower())
+                    {
+                        case "magnifying glass":
+                            Console.Write("🔎");
+                            break;
+                        case "drumstick":
+                            Console.Write("🍗");
+                            break;
+                        case "potion":
+                            Console.Write("🧪");
+                            break;
+                        case "extractor":
+                            Console.Write("🛠️");
+                            break;
+                        case "convertor":
+                            Console.Write("🔄");
+                            break;
+                        case "exploding barrel":
+                            Console.Write("🧨");
+                            break;
+                        case "cage":
+                            Console.Write("⛓️");
+                            break;
+                        case "balaclava":
+                            Console.Write("🥷");
+                            break;
+                        default:
+                            Console.Write("—");
+                            break;
+                    }
+                    Console.WriteLine($"  ({player.Inventory[i].Description})");
+                }
+                Console.Write("Choose item to use (Enter corresponding number) or any other key to cancel: ");
+                char key = Console.ReadKey().KeyChar;
+                if (!char.IsDigit(key))
+                {
+                    return;
+                }
+                int num = key - '0';
+                if (num < 1 || num > MAX_ITEMS || !allowed[num - 1])
+                {
+                    return;
+                }
+                UseItem(player.Inventory[num - 1], player, ai);
             }
             if (firing)
             {
-
-            }
-            if (shell != -1)
-            {
-                Console.WriteLine($"Current shell: {(shell == 1 ? "💥" : "💨")}");
+                //Firing animation
             }
         }
 
