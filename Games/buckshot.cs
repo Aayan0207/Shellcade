@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-
+using System.Threading;
 //firing animation
 namespace ArcadeProject.Games
 {
@@ -17,7 +17,29 @@ namespace ArcadeProject.Games
             new Item("Potion", "50% -1 HP/ 50% +2 HP", 2, 1),
             new Item("NULL", "NULL", 0, 3),
         ];
+        public static int TIME = 750;
+        public static int ANIMATION = 2;
 
+        public static string[] ANIMATIONS_LIVE_UP = [
+            "|            🟥          |\n|                        |\n|                        |\n",
+            "|                        |\n|            🟥          |\n|                        |\n",
+            "|                        |\n|                        |\n|            🟥          |\n"
+            ];
+        public static string[] ANIMATIONS_LIVE_DOWN = [
+           "|                        |\n|                        |\n|            🟥          |\n",
+            "|                        |\n|            🟥          |\n|                        |\n",
+            "|            🟥          |\n|                        |\n|                        |\n",
+            ];
+        public static string[] ANIMATIONS_BLANK_UP = [
+            "|            🟦          |\n|                        |\n|                        |\n",
+            "|                        |\n|            🟦          |\n|                        |\n",
+            "|                        |\n|                        |\n|            🟦          |\n"
+            ];
+        public static string[] ANIMATIONS_BLANK_DOWN = [
+            "|                        |\n|                        |\n|            🟦          |\n",
+            "|                        |\n|            🟦          |\n|                        |\n",
+            "|            🟦          |\n|                        |\n|                        |\n",
+            ];
         public static int CURRENT = -1;
         public static bool CAGED = false;
         public static bool DOUBLE_DMG = false;
@@ -172,7 +194,14 @@ namespace ArcadeProject.Games
         {
             int shell = SHELLS[0];
             SHELLS = SHELLS[1..];
-            Display(player, ai, false, true, shell, own);
+            bool ShootUp = (TURN == 1 && own == false) || (TURN == 0 && own == true);
+            for (int frame = 2; frame >= 0; frame--)
+            {
+                ANIMATION = frame;
+                Display(player, ai, false, true, own, ShootUp, shell);
+                Thread.Sleep(TIME / 3);
+            }
+            ANIMATION = 2;
             if (TURN == 1)
             {
                 if (shell == 1)
@@ -359,7 +388,7 @@ namespace ArcadeProject.Games
                     break;
             }
         }
-        public static void Display(Player player, Player ai, bool inventory = false, bool firing = false, int shell = -1, bool own = false)
+        public static void Display(Player player, Player ai, bool inventory = false, bool firing = false, bool own = false, bool up = false, int shell = -1)
         {
             Console.Clear();
             Console.ResetColor();
@@ -377,7 +406,7 @@ namespace ArcadeProject.Games
             }
             Console.WriteLine("       |");
             Console.WriteLine("|           🤖           |");
-            Console.Write("|    ");
+            Console.Write("|     ");
             foreach (Item item in ai.Inventory)
             {
                 switch (item.Name.ToLower())
@@ -407,28 +436,56 @@ namespace ArcadeProject.Games
                         Console.Write("🥷");
                         break;
                     default:
-                        Console.Write("—");
+                        Console.Write(" ");
                         break;
                 }
-                Console.Write($"  {(item.Name != ITEMS[^1].Name ? ai.ItemCount(item) : "—")} ");
+                Console.Write($"    ");
             }
-            Console.WriteLine("   |");
+            Console.WriteLine("  |");
             Console.WriteLine("__________________________");
-            for (int i = 0; i < 3; i++)
+            if (firing && up)
             {
-                Console.WriteLine("|                        |");
+                if (shell == 1)
+                {
+                    Console.Write(ANIMATIONS_LIVE_UP[ANIMATION]);
+                }
+                else
+                {
+                    Console.Write(ANIMATIONS_BLANK_UP[ANIMATION]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    Console.WriteLine("|                        |");
+                }
             }
             Console.WriteLine("|           ||           |");
             Console.WriteLine("|           ||           |");
             Console.WriteLine("|       ====||====       |");
             Console.WriteLine("|           ||           |");
             Console.WriteLine("|           ||           |");
-            for (int i = 0; i < 3; i++)
+            if (firing && !up)
             {
-                Console.WriteLine("|                        |");
+                if (shell == 1)
+                {
+                    Console.Write(ANIMATIONS_LIVE_DOWN[ANIMATION]);
+                }
+                else
+                {
+                    Console.Write(ANIMATIONS_BLANK_DOWN[ANIMATION]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    Console.WriteLine("|                        |");
+                }
             }
             Console.WriteLine("__________________________");
-            Console.Write("|    ");
+            Console.Write("|     ");
             foreach (Item item in player.Inventory)
             {
                 switch (item.Name.ToLower())
@@ -458,12 +515,12 @@ namespace ArcadeProject.Games
                         Console.Write("🥷");
                         break;
                     default:
-                        Console.Write("—");
+                        Console.Write(" ");
                         break;
                 }
-                Console.Write($"  {(item.Name != ITEMS[^1].Name ? player.ItemCount(item) : "—")} ");
+                Console.Write($"    ");
             }
-            Console.WriteLine("   |");
+            Console.WriteLine("  |");
             Console.WriteLine("|          You           |");
             Console.Write("|       ");
             for (int i = 0; i < player.Health; i++)
@@ -536,10 +593,6 @@ namespace ArcadeProject.Games
                     return;
                 }
                 UseItem(player.Inventory[num - 1], player, ai);
-            }
-            if (firing)
-            {
-                //Firing animation
             }
         }
 
