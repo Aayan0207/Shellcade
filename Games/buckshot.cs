@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading;
-//firing animation
+
 namespace ArcadeProject.Games
 {
     public class BuckshotRoulette
