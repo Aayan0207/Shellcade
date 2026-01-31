@@ -40,7 +40,7 @@ namespace ArcadeProject.Games
             {
                 Console.Clear();
                 Console.ResetColor();
-                Console.WriteLine("    ____             __        __          __  ____              __     __  __ \n   / __ )__  _______/ /_______/ /_  ____  / /_/ __ \\____  __  __/ /__  / /_/ /_\n  / __  / / / / ___/ //_/ ___/ __ \\/ __ \\/ __/ /_/ / __ \\/ / / / / _ \\/ __/ __/\n / /_/ / /_/ / /__/ ,< (__  ) / / / /_/ / /_/ _, _/ /_/ / /_/ / /  __/ /_/ /_  \n/_____/\\__,_/\\___/_/|_/____/_/ /_/\\____/\\__/_/ |_|\\____/\\__,_/_/\\___/\\__/\\__/  \n                                                                               \n      \n  ___ \n / _ \\\n/  __/\n\\___/ \n      \n");
+                Console.WriteLine("    ____             __        __          __  ____              __     __  __     \n   / __ )__  _______/ /_______/ /_  ____  / /_/ __ \\____  __  __/ /__  / /_/ /____ \n  / __  / / / / ___/ //_/ ___/ __ \\/ __ \\/ __/ /_/ / __ \\/ / / / / _ \\/ __/ __/ _ \\\n / /_/ / /_/ / /__/ ,< (__  ) / / / /_/ / /_/ _, _/ /_/ / /_/ / /  __/ /_/ /_/  __/\n/_____/\\__,_/\\___/_/|_/____/_/ /_/\\____/\\__/_/ |_|\\____/\\__,_/_/\\___/\\__/\\__/\\___/ \n                                                                                   \n");
                 Display(player, ai);
                 if (SHELLS.Length == 0)
                 {
@@ -161,7 +161,7 @@ namespace ArcadeProject.Games
         {
             int shell = SHELLS[0];
             SHELLS = SHELLS[1..];
-            Display(player, ai, false, true, shell);
+            Display(player, ai, false, true, shell, own);
             if (TURN == 1)
             {
                 if (shell == 1)
@@ -324,9 +324,129 @@ namespace ArcadeProject.Games
                     break;
             }
         }
-        public static void Display(Player player, Player ai, bool inventory = false, bool firing = false, int shell = -1)
+        public static void Display(Player player, Player ai, bool inventory = false, bool firing = false, int shell = -1, bool own = false)
         {
+            Console.WriteLine("__________________________");
+            Console.Write("|       ");
+            for (int i = 0; i < ai.Health; i++)
+            {
+                Console.Write("🟩");
+            }
+            for (int i = 0; i < HEALTH - ai.Health; i++)
+            {
+                Console.Write("⬛");
+            }
+            Console.WriteLine("       |");
+            Console.WriteLine("|           🤖           |");
+            Console.Write("|          ");
+            foreach (Item item in ai.Inventory)
+            {
+                switch (item.Name.ToLower())
+                {
+                    case "magnifying glass":
+                        Console.Write("🔎");
+                        break;
+                    case "drumstick":
+                        Console.Write("🍗");
+                        break;
+                    case "potion":
+                        Console.Write("🧪");
+                        break;
+                    case "extractor":
+                        Console.Write("🛠️");
+                        break;
+                    case "convertor":
+                        Console.Write("🔄");
+                        break;
+                    case "exploding barrel":
+                        Console.Write("💥");
+                        break;
+                    case "cage":
+                        Console.Write("⛓️");
+                        break;
+                    case "balaclava":
+                        Console.Write("🥷");
+                        break;
+                    default:
+                        Console.Write("—");
+                        break;
+                }
+                Console.Write($"{(item.Name != ITEMS[^1].Name ? ai.ItemCount(item) : "—")} ");
+            }
+            Console.WriteLine("      |");
+            Console.WriteLine("__________________________");
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine("|                        |");
+            }
+            Console.WriteLine("|           ||           |");
+            Console.WriteLine("|           ||           |");
+            Console.WriteLine("|       ====||====       |");
+            Console.WriteLine("|           ||           |");
+            Console.WriteLine("|           ||           |");
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine("|                        |");
+            }
+            Console.WriteLine("__________________________");
+            Console.Write("|      ");
+            foreach (Item item in player.Inventory)
+            {
+                Console.WriteLine(item.Name.ToLower());
+                switch (item.Name.ToLower())
+                {
+                    case "magnifying glass":
+                        Console.Write("🔎");
+                        break;
+                    case "drumstick":
+                        Console.Write("🍗");
+                        break;
+                    case "potion":
+                        Console.Write("🧪");
+                        break;
+                    case "extractor":
+                        Console.Write("🛠️");
+                        break;
+                    case "convertor":
+                        Console.Write("🔄");
+                        break;
+                    case "exploding barrel":
+                        Console.Write("💥");
+                        break;
+                    case "cage":
+                        Console.Write("⛓️");
+                        break;
+                    case "balaclava":
+                        Console.Write("🥷");
+                        break;
+                    default:
+                        Console.Write("—");
+                        break;
+                }
+                Console.Write($"{(item.Name != ITEMS[^1].Name ? player.ItemCount(item) : "—")} ");
+            }
+            Console.WriteLine("      |");
+            Console.WriteLine("|          You           |");
+            Console.Write("|       ");
+            for (int i = 0; i < player.Health; i++)
+            {
+                Console.Write("🟩");
+            }
+            for (int i = 0; i < HEALTH - player.Health; i++)
+            {
+                Console.Write("⬛");
+            }
+            Console.WriteLine("       |");
+            Console.WriteLine("__________________________");
             if (inventory)
+            {
+
+            }
+            if (firing)
+            {
+
+            }
+            if (shell != -1)
             {
 
             }
