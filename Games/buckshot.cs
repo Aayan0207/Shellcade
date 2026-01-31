@@ -1,6 +1,7 @@
 using System;
+using System.Linq;
 
-//ai turn, display
+//display
 namespace ArcadeProject.Games
 {
     public class BuckshotRoulette
@@ -16,6 +17,8 @@ namespace ArcadeProject.Games
             new Item("Potion", "50% -1 HP/ 50% +2 HP", 2, 1),
             new Item("NULL", "NULL", 0, 3),
         ];
+
+        public static int CURRENT = -1;
         public static bool CAGED = false;
         public static bool DOUBLE_DMG = false;
         public const int SHELL_COUNT = 6;
@@ -29,12 +32,10 @@ namespace ArcadeProject.Games
             Console.Clear();
             Console.ResetColor();
             Queue();
-            Player player = new Player(HEALTH, []);
-            Player ai = new Player(HEALTH, []);
+            Player player = new Player(HEALTH, [ITEMS[^1], ITEMS[^1], ITEMS[^1]]);
+            Player ai = new Player(HEALTH, [ITEMS[^1], ITEMS[^1], ITEMS[^1]]);
             TURN = Random.Shared.NextDouble() < 0.5 ? 1 : 0; //1 -> Player, 0 -> AI
             ROUND = 1;
-            player.Inventory = [ITEMS[^1], ITEMS[^1], ITEMS[^1]];
-            ai.Inventory = [ITEMS[^1], ITEMS[^1], ITEMS[^1]];
             while (player.Health > 0 && ai.Health > 0)
             {
                 Console.Clear();
@@ -47,13 +48,14 @@ namespace ArcadeProject.Games
                     Items(player);
                     Items(ai);
                     Queue();
+                    continue;
                 }
                 if (TURN == 1)
                 {
                     Console.WriteLine("Inventory (Z) or Fire (X)");
                     Console.Write("Enter action: ");
                     char key = Console.ReadKey().KeyChar;
-                    if (key != 'Z' || key != 'X')
+                    if (key != 'Z' && key != 'X')
                     {
                         continue;
                     }
@@ -67,25 +69,98 @@ namespace ArcadeProject.Games
                         case 'X':
                             Console.Write("Fire at yourself (Z) or fire at opponent (X): ");
                             key = Console.ReadKey().KeyChar;
-                            if (key != 'Z' || key != 'X')
+                            if (key != 'Z' && key != 'X')
                             {
                                 continue;
                             }
-                            int shell = SHELLS[0];
-                            SHELLS = SHELLS[1..];
-                            Fire(player, ai, shell, key == 'Z' ? true : false);
+                            Fire(player, ai, key == 'Z' ? true : false);
                             break;
                     }
                 }
                 else
                 {
-                    //AI
+                    int RemainingShells = SHELLS.Length;
+                    int LiveShells = SHELLS.Count(x => x == 1);
+                    double LiveProbability = (double)LiveShells / RemainingShells;
+                    if (CURRENT == 1)
+                    {
+                        LiveProbability = 1;
+                    }
+                    else if (CURRENT == 0)
+                    {
+                        LiveProbability = 0;
+                    }
+                    int priority;
+                    if (ai.Health == 1)
+                    {
+                        priority = -1; //Survive
+                    }
+                    else if (player.Health == 1)
+                    {
+                        priority = 1; //Attack
+                    }
+                    else
+                    {
+                        if (LiveProbability >= 0.6)
+                        {
+                            priority = 1; //Attack
+                        }
+                        else
+                        {
+                            priority = -1; //Survive
+                        }
+                    }
+                    if (ai.ItemCount(ITEMS[0]) > 0 && LiveProbability >= 0.33 && CURRENT == -1) //Magnifying Glass
+                    {
+                        UseItem(ITEMS[0], player, ai);
+                    }
+                    if (ai.ItemCount(ITEMS[3]) > 0 && LiveProbability >= 0.5) //Cage
+                    {
+                        UseItem(ITEMS[3], player, ai);
+                    }
+                    if (ai.ItemCount(ITEMS[1]) > 0 && ai.Health <= HEALTH - 1) //Drumstick
+                    {
+                        UseItem(ITEMS[1], player, ai);
+                    }
+                    if (ai.ItemCount(ITEMS[6]) > 0 && (player.ItemCount(ITEMS[2]) > 0 || player.ItemCount(ITEMS[5]) > 0 || player.ItemCount(ITEMS[^1]) > 0) && ai.ItemCount(ITEMS[^1]) > 0) //Balaclava
+                    {
+                        UseItem(ITEMS[6], player, ai); //AI steal needs to be set up
+                    }
+                    if (priority == 1)
+                    {
+                        if (ai.ItemCount(ITEMS[5]) > 0 && (CURRENT == 0 || LiveProbability <= 0.45)) //Extractor
+                        {
+                            UseItem(ITEMS[5], player, ai);
+                        }
+                        if (ai.ItemCount(ITEMS[4]) > 0 && LiveProbability >= 0.45)  //Exploding Barrel
+                        {
+                            UseItem(ITEMS[4], player, ai);
+                        }
+                        if (ai.ItemCount(ITEMS[7]) > 0 && ai.Health == 1) //Potion
+                        {
+                            UseItem(ITEMS[7], player, ai);
+                        }
+                        Fire(player, ai, false);
+                    }
+                    else
+                    {
+                        if (ai.ItemCount(ITEMS[5]) > 0 && (CURRENT == 1 || LiveProbability >= 0.6)) //Extractor
+                        {
+                            UseItem(ITEMS[5], player, ai);
+                        }
+                        if (ai.ItemCount(ITEMS[7]) > 0 && ai.Health <= 2) //Potion
+                        {
+                            UseItem(ITEMS[7], player, ai);
+                        }
+                        Fire(player, ai, true);
+                    }
                 }
             }
         }
-
-        public static void Fire(Player player, Player ai, int shell, bool own)
+        public static void Fire(Player player, Player ai, bool own)
         {
+            int shell = SHELLS[0];
+            SHELLS = SHELLS[1..];
             Display(player, ai, false, true, shell);
             if (TURN == 1)
             {
@@ -151,9 +226,11 @@ namespace ArcadeProject.Games
             }
             else
             {
-                TURN = ~TURN;
+                TURN = TURN == 1 ? 0 : 1;
             }
-
+            CURRENT = -1;
+            player.Health = Math.Max(player.Health, 0);
+            ai.Health = Math.Max(ai.Health, 0);
         }
         public static void UseItem(Item item, Player player, Player ai)
         {
@@ -161,6 +238,7 @@ namespace ArcadeProject.Games
             {
                 case "magnifying glass":
                     Console.WriteLine($"Current shell: {(SHELLS[0] == 1 ? "Live" : "Blank")}");
+                    CURRENT = SHELLS[0] == 1 ? 1 : 0;
                     break;
                 case "drumstick":
                     if (TURN == 1)
@@ -174,6 +252,7 @@ namespace ArcadeProject.Games
                     break;
                 case "extractor":
                     SHELLS = SHELLS[1..];
+                    CURRENT = -1;
                     break;
                 case "cage":
                     CAGED = true;
@@ -182,7 +261,8 @@ namespace ArcadeProject.Games
                     DOUBLE_DMG = true;
                     break;
                 case "convertor":
-                    SHELLS[0] = ~SHELLS[0];
+                    SHELLS[0] = SHELLS[0] == 1 ? 0 : 1;
+                    CURRENT = SHELLS[0];
                     break;
                 case "balaclava":
                     if (TURN == 1)
@@ -194,15 +274,15 @@ namespace ArcadeProject.Games
                         else
                         {
                             Console.WriteLine("Choose item to steal.");
-                            int counter = 1;
+                            bool[] allowed = [false, false, false];
                             for (int i = 0; i < MAX_ITEMS; i++)
                             {
                                 if (ai.Inventory[i].Name == ITEMS[^1].Name)
                                 {
                                     continue;
                                 }
-                                Console.WriteLine($"{counter}. {ai.Inventory[i].Name}");
-                                counter++;
+                                allowed[i] = true;
+                                Console.WriteLine($"{i + 1}. {ai.Inventory[i].Name}");
                             }
                             Console.Write("Enter corresponding number key: ");
                             char key = Console.ReadKey().KeyChar;
@@ -211,7 +291,7 @@ namespace ArcadeProject.Games
                                 return;
                             }
                             int num = key - '0';
-                            if (num > 3 || num < 1)
+                            if (num > 3 || num < 1 || !allowed[num - 1])
                             {
                                 return;
                             }
@@ -221,17 +301,25 @@ namespace ArcadeProject.Games
                     }
                     else
                     {
-                        //AI steal
+                        for (int i = 0; i < MAX_ITEMS; i++)
+                        {
+                            if (player.Inventory[i].Name == ITEMS[2].Name || player.Inventory[i].Name == ITEMS[5].Name || player.Inventory[i].Name == ITEMS[6].Name)
+                            {
+                                Item popped = player.PopItem(i);
+                                ai.InventoryAdd(popped);
+                                break;
+                            }
+                        }
                     }
                     break;
                 case "potion":
                     if (TURN == 1)
                     {
-                        player.Health = Random.Shared.NextDouble() > 0.5 ? Math.Min(player.Health + 1, HEALTH) : 0;
+                        player.Health = Random.Shared.NextDouble() > 0.5 ? Math.Min(player.Health + 2, HEALTH) : Math.Max(player.Health - 1, 0);
                     }
                     else
                     {
-                        ai.Health = Random.Shared.NextDouble() > 0.5 ? Math.Min(ai.Health + 1, HEALTH) : 0;
+                        ai.Health = Random.Shared.NextDouble() > 0.5 ? Math.Min(ai.Health + 2, HEALTH) : Math.Max(ai.Health - 1, 0);
                     }
                     break;
             }
@@ -267,6 +355,10 @@ namespace ArcadeProject.Games
 
         public static void AddItem(Player player)
         {
+            if (player.ItemCount(ITEMS[^1]) == 0)
+            {
+                return;
+            }
             int totalWeight = 0, running = 0;
             foreach (Item item in ITEMS)
             {
@@ -303,6 +395,7 @@ namespace ArcadeProject.Games
                 SHELLS[i] = 0;
             }
             Random.Shared.Shuffle(SHELLS);
+            CURRENT = -1;
         }
     }
 
