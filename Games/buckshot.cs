@@ -25,8 +25,10 @@ namespace ArcadeProject.Games
         public const int HEALTH = 5;
         public static int TURN;
         public const int MAX_ITEMS = 3;
-        public static int ROUND;
+        public static int ROUND = 0;
         public static int[] SHELLS = new int[SHELL_COUNT];
+
+        public static bool start = true;
         public static void Run()
         {
             Console.Clear();
@@ -35,26 +37,23 @@ namespace ArcadeProject.Games
             Player player = new Player(HEALTH, [ITEMS[^1], ITEMS[^1], ITEMS[^1]]);
             Player ai = new Player(HEALTH, [ITEMS[^1], ITEMS[^1], ITEMS[^1]]);
             TURN = Random.Shared.NextDouble() < 0.5 ? 1 : 0; //1 -> Player, 0 -> AI
-            ROUND = 1;
             while (player.Health > 0 && ai.Health > 0)
             {
-                Console.Clear();
-                Console.ResetColor();
-                Console.WriteLine("    ____             __        __          __  ____              __     __  __     \n   / __ )__  _______/ /_______/ /_  ____  / /_/ __ \\____  __  __/ /__  / /_/ /____ \n  / __  / / / / ___/ //_/ ___/ __ \\/ __ \\/ __/ /_/ / __ \\/ / / / / _ \\/ __/ __/ _ \\\n / /_/ / /_/ / /__/ ,< (__  ) / / / /_/ / /_/ _, _/ /_/ / /_/ / /  __/ /_/ /_/  __/\n/_____/\\__,_/\\___/_/|_/____/_/ /_/\\____/\\__/_/ |_|\\____/\\__,_/_/\\___/\\__/\\__/\\___/ \n                                                                                   \n");
-                Display(player, ai);
-                if (SHELLS.Length == 0)
+                if (SHELLS.Length == 0 || start)
                 {
+                    start = false;
                     ROUND++;
                     Items(player);
                     Items(ai);
                     Queue();
                     continue;
                 }
+                Display(player, ai);
                 if (TURN == 1)
                 {
                     Console.WriteLine("Inventory (Z) or Fire (X)");
                     Console.Write("Enter action: ");
-                    char key = Console.ReadKey().KeyChar;
+                    char key = char.ToUpper(Console.ReadKey().KeyChar);
                     if (key != 'Z' && key != 'X')
                     {
                         continue;
@@ -67,8 +66,8 @@ namespace ArcadeProject.Games
                             Display(player, ai, true);
                             break;
                         case 'X':
-                            Console.Write("Fire at yourself (Z) or fire at opponent (X): ");
-                            key = Console.ReadKey().KeyChar;
+                            Console.Write("\nFire at yourself (Z) or fire at opponent (X): ");
+                            key = char.ToUpper(Console.ReadKey().KeyChar);
                             if (key != 'Z' && key != 'X')
                             {
                                 continue;
@@ -156,6 +155,18 @@ namespace ArcadeProject.Games
                     }
                 }
             }
+            Display(player, ai);
+            if (player.Health == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Sorry. You lost. AI Wins!");
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Congratulations! You Win!");
+            }
+            Console.ResetColor();
         }
         public static void Fire(Player player, Player ai, bool own)
         {
@@ -326,6 +337,10 @@ namespace ArcadeProject.Games
         }
         public static void Display(Player player, Player ai, bool inventory = false, bool firing = false, int shell = -1, bool own = false)
         {
+            Console.Clear();
+            Console.ResetColor();
+            Console.WriteLine("    ____             __        __          __  ____              __     __  __     \n   / __ )__  _______/ /_______/ /_  ____  / /_/ __ \\____  __  __/ /__  / /_/ /____ \n  / __  / / / / ___/ //_/ ___/ __ \\/ __ \\/ __/ /_/ / __ \\/ / / / / _ \\/ __/ __/ _ \\\n / /_/ / /_/ / /__/ ,< (__  ) / / / /_/ / /_/ _, _/ /_/ / /_/ / /  __/ /_/ /_/  __/\n/_____/\\__,_/\\___/_/|_/____/_/ /_/\\____/\\__/_/ |_|\\____/\\__,_/_/\\___/\\__/\\__/\\___/ \n                                                                                   \n");
+            Console.WriteLine($"         Round {ROUND}                 ");
             Console.WriteLine("__________________________");
             Console.Write("|       ");
             for (int i = 0; i < ai.Health; i++)
@@ -338,7 +353,7 @@ namespace ArcadeProject.Games
             }
             Console.WriteLine("       |");
             Console.WriteLine("|           🤖           |");
-            Console.Write("|          ");
+            Console.Write("|    ");
             foreach (Item item in ai.Inventory)
             {
                 switch (item.Name.ToLower())
@@ -359,7 +374,7 @@ namespace ArcadeProject.Games
                         Console.Write("🔄");
                         break;
                     case "exploding barrel":
-                        Console.Write("💥");
+                        Console.Write("🧨");
                         break;
                     case "cage":
                         Console.Write("⛓️");
@@ -371,9 +386,9 @@ namespace ArcadeProject.Games
                         Console.Write("—");
                         break;
                 }
-                Console.Write($"{(item.Name != ITEMS[^1].Name ? ai.ItemCount(item) : "—")} ");
+                Console.Write($"  {(item.Name != ITEMS[^1].Name ? ai.ItemCount(item) : "—")} ");
             }
-            Console.WriteLine("      |");
+            Console.WriteLine("   |");
             Console.WriteLine("__________________________");
             for (int i = 0; i < 3; i++)
             {
@@ -389,10 +404,9 @@ namespace ArcadeProject.Games
                 Console.WriteLine("|                        |");
             }
             Console.WriteLine("__________________________");
-            Console.Write("|      ");
+            Console.Write("|    ");
             foreach (Item item in player.Inventory)
             {
-                Console.WriteLine(item.Name.ToLower());
                 switch (item.Name.ToLower())
                 {
                     case "magnifying glass":
@@ -411,7 +425,7 @@ namespace ArcadeProject.Games
                         Console.Write("🔄");
                         break;
                     case "exploding barrel":
-                        Console.Write("💥");
+                        Console.Write("🧨");
                         break;
                     case "cage":
                         Console.Write("⛓️");
@@ -423,9 +437,9 @@ namespace ArcadeProject.Games
                         Console.Write("—");
                         break;
                 }
-                Console.Write($"{(item.Name != ITEMS[^1].Name ? player.ItemCount(item) : "—")} ");
+                Console.Write($"  {(item.Name != ITEMS[^1].Name ? player.ItemCount(item) : "—")} ");
             }
-            Console.WriteLine("      |");
+            Console.WriteLine("   |");
             Console.WriteLine("|          You           |");
             Console.Write("|       ");
             for (int i = 0; i < player.Health; i++)
@@ -438,6 +452,7 @@ namespace ArcadeProject.Games
             }
             Console.WriteLine("       |");
             Console.WriteLine("__________________________");
+            Console.WriteLine($"Current shells: 💥 {SHELLS.Count(x => x == 1)} 💨 {SHELLS.Count(x => x == 0)}");
             if (inventory)
             {
 
@@ -448,7 +463,7 @@ namespace ArcadeProject.Games
             }
             if (shell != -1)
             {
-
+                Console.WriteLine($"Current shell: {(shell == 1 ? "💥" : "💨")}");
             }
         }
 
@@ -504,7 +519,7 @@ namespace ArcadeProject.Games
         }
         public static void Queue()
         {
-
+            SHELLS = new int[SHELL_COUNT];
             int live = Random.Shared.Next(2, 4);
             for (int i = 0; i < live; i++)
             {
