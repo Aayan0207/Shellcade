@@ -30,13 +30,13 @@ namespace ArcadeProject.Games
                 Console.ResetColor();
                 Display(board);
                 int row, column;
-                Console.Write("Enter row (1-10): ");
+                Console.Write($"Enter row (1-{ROWS}): ");
                 row = int.Parse(Console.ReadLine()) - 1;
                 if (row < 0 || row >= ROWS)
                 {
                     continue;
                 }
-                Console.Write("Enter column (1-10): ");
+                Console.Write($"Enter column (1-{COLUMNS}): ");
                 column = int.Parse(Console.ReadLine()) - 1;
                 if (column < 0 || column >= ROWS)
                 {
